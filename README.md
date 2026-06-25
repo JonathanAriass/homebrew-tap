@@ -6,10 +6,12 @@ database client for Postgres, MySQL, MariaDB and MongoDB.
 ## Install
 
 ```sh
-brew install --cask jonathanariass/tap/ganesha
+brew tap jonathanariass/tap
+brew trust jonathanariass/tap   # Homebrew 6.0+ requires trusting third-party taps (one-time)
+brew install --cask ganesha
 ```
 
-(That's shorthand for `brew tap jonathanariass/tap && brew install --cask ganesha`.)
+On Homebrew older than 6.0 the `brew trust` line isn't needed — `brew install --cask jonathanariass/tap/ganesha` works on its own.
 
 Ganesha isn't notarized by Apple yet, so on first launch macOS will ask you to confirm:
 right-click the app in **Applications → Open**, or run
