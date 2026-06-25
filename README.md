@@ -13,9 +13,17 @@ brew install --cask ganesha
 
 On Homebrew older than 6.0 the `brew trust` line isn't needed — `brew install --cask jonathanariass/tap/ganesha` works on its own.
 
-Ganesha isn't notarized by Apple yet, so on first launch macOS will ask you to confirm:
-right-click the app in **Applications → Open**, or run
-`xattr -dr com.apple.quarantine "/Applications/Ganesha.app"`.
+Ganesha isn't signed or notarized by Apple yet, so macOS quarantines it and — on
+Apple Silicon — may report it as **"Ganesha is damaged and can't be opened"**
+("está dañado"). The cask tries to clear the quarantine flag on install; if macOS
+still blocks it, run this once and reopen:
+
+```sh
+xattr -dr com.apple.quarantine "/Applications/Ganesha.app"
+```
+
+The right-click → **Open** trick does _not_ clear the "damaged" message — only the
+command above does.
 
 ## How it stays current
 

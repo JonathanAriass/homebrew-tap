@@ -16,10 +16,26 @@ cask "ganesha" do
 
   app "Ganesha.app"
 
+  # Ganesha isn't signed/notarized yet, so a quarantined copy is reported as
+  # "damaged" on Apple Silicon. Homebrew 6.0 removed --no-quarantine, so strip the
+  # flag here on install. If this is blocked, the caveat below has the manual command.
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/Ganesha.app"]
+  end
+
   caveats <<~EOS
-    Ganesha is not yet notarized by Apple, so macOS quarantines it on download. On first launch:
-      • right-click Ganesha in Applications and choose "Open" (once), or
-      • run:  xattr -dr com.apple.quarantine "/Applications/Ganesha.app"
+    Ganesha isn't signed or notarized by Apple yet. macOS quarantines apps it
+    downloads, and on Apple Silicon an unsigned quarantined app is reported as
+    "Ganesha is damaged and can't be opened" ("Ganesha está dañado").
+
+    This cask tries to clear the quarantine flag for you on install. If macOS
+    still blocks it, run this once, then open the app again:
+
+      xattr -dr com.apple.quarantine "/Applications/Ganesha.app"
+
+    (The right-click -> Open trick does NOT clear the "damaged" variant — only the
+    command above does.)
   EOS
 
   # The app keeps its data under "db-client" (app.getName() is intentionally NOT renamed to
