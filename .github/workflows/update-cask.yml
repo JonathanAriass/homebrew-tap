@@ -1,0 +1,48 @@
+name: Update cask
+
+# Keeps Casks/ganesha.rb in sync with the latest release of JonathanAriass/Ganesha.
+# Runs on a schedule and can be triggered manually (Actions tab -> Update cask -> Run workflow).
+# Uses only this repo's own GITHUB_TOKEN — no personal access token needed.
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refresh version + sha256 from the latest Ganesha release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          repo="JonathanAriass/Ganesha"
+          tag="$(gh release view --repo "$repo" --json tagName -q .tagName)"
+          version="${tag#v}"
+          base="https://github.com/${repo}/releases/download/${tag}"
+
+          sha_of() {
+            curl -fsSL "${base}/$1" -o /tmp/asset.dmg
+            shasum -a 256 /tmp/asset.dmg | cut -d' ' -f1
+          }
+          sha_arm="$(sha_of "Ganesha-${version}-arm64.dmg")"
+          sha_intel="$(sha_of "Ganesha-${version}-x64.dmg")"
+
+          sed -i -E "s|version \"[^\"]*\"|version \"${version}\"|" Casks/ganesha.rb
+          sed -i -E "s|(arm: +\")[0-9a-f]{64}(\")|\1${sha_arm}\2|" Casks/ganesha.rb
+          sed -i -E "s|(intel: +\")[0-9a-f]{64}(\")|\1${sha_intel}\2|" Casks/ganesha.rb
+
+          if git diff --quiet; then
+            echo "Cask already up to date (v${version})."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "ganesha ${version}"
+          git push
