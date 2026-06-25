@@ -5,8 +5,8 @@ cask "ganesha" do
   # which reads the latest release of JonathanAriass/Ganesha. The 64-zero hashes below are
   # placeholders until the first release is published.
   version "1.0.0"
-  sha256 arm:   "0000000000000000000000000000000000000000000000000000000000000000",
-         intel: "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 arm:   "655ca9cb04633aaeeba598d918b93fd1416b4e4f5573b54d70155bac92fc073a",
+         intel: "ff8c1c436911237aa2733c8aef77152d7eded755365fe3c2a4a7d9d40a21f080"
 
   url "https://github.com/JonathanAriass/Ganesha/releases/download/v#{version}/Ganesha-#{version}-#{arch}.dmg",
       verified: "github.com/JonathanAriass/Ganesha/"
