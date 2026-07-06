@@ -1,18 +1,21 @@
 cask "ganesha" do
-  arch arm: "arm64", intel: "x64"
+  # Apple Silicon only. Intel (x86_64) was dropped: GitHub retired the macos-13 Intel
+  # runner, and its replacement (macos-15-intel) can't package the app reliably
+  # (hdiutil "Resource busy"). `depends_on arch` below gives Intel users a clean
+  # "unsupported" message instead of a failed install.
+  #
+  # version + sha256 are refreshed automatically by .github/workflows/update-cask.yml,
+  # which reads the latest release of JonathanAriass/Ganesha.
+  version "1.0.1"
+  sha256 "3e694812d0bbc1216e4acb064eb27836d7d29c1897d34c978ea83b6eae9d955d"
 
-  # version + sha256 are kept up to date automatically by .github/workflows/update-cask.yml,
-  # which reads the latest release of JonathanAriass/Ganesha. The 64-zero hashes below are
-  # placeholders until the first release is published.
-  version "1.0.0"
-  sha256 arm:   "655ca9cb04633aaeeba598d918b93fd1416b4e4f5573b54d70155bac92fc073a",
-         intel: "ff8c1c436911237aa2733c8aef77152d7eded755365fe3c2a4a7d9d40a21f080"
-
-  url "https://github.com/JonathanAriass/Ganesha/releases/download/v#{version}/Ganesha-#{version}-#{arch}.dmg",
+  url "https://github.com/JonathanAriass/Ganesha/releases/download/v#{version}/Ganesha-#{version}-arm64.zip",
       verified: "github.com/JonathanAriass/Ganesha/"
   name "Ganesha"
   desc "Cross-platform database client for Postgres, MySQL, MariaDB and MongoDB"
   homepage "https://github.com/JonathanAriass/Ganesha"
+
+  depends_on arch: :arm64
 
   app "Ganesha.app"
 

@@ -27,16 +27,11 @@ jobs:
           version="${tag#v}"
           base="https://github.com/${repo}/releases/download/${tag}"
 
-          sha_of() {
-            curl -fsSL "${base}/$1" -o /tmp/asset.dmg
-            shasum -a 256 /tmp/asset.dmg | cut -d' ' -f1
-          }
-          sha_arm="$(sha_of "Ganesha-${version}-arm64.dmg")"
-          sha_intel="$(sha_of "Ganesha-${version}-x64.dmg")"
+          # Apple Silicon only — the app ships as a single arm64 zip (see the cask).
+          sha_arm="$(curl -fsSL "${base}/Ganesha-${version}-arm64.zip" | shasum -a 256 | cut -d' ' -f1)"
 
           sed -i -E "s|version \"[^\"]*\"|version \"${version}\"|" Casks/ganesha.rb
-          sed -i -E "s|(arm: +\")[0-9a-f]{64}(\")|\1${sha_arm}\2|" Casks/ganesha.rb
-          sed -i -E "s|(intel: +\")[0-9a-f]{64}(\")|\1${sha_intel}\2|" Casks/ganesha.rb
+          sed -i -E "s|sha256 \"[0-9a-f]{64}\"|sha256 \"${sha_arm}\"|" Casks/ganesha.rb
 
           if git diff --quiet; then
             echo "Cask already up to date (v${version})."
