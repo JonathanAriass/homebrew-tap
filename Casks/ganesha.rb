@@ -6,8 +6,8 @@ cask "ganesha" do
   #
   # version + sha256 are refreshed automatically by .github/workflows/update-cask.yml,
   # which reads the latest release of JonathanAriass/Ganesha.
-  version "1.0.1"
-  sha256 "3e694812d0bbc1216e4acb064eb27836d7d29c1897d34c978ea83b6eae9d955d"
+  version "1.0.2"
+  sha256 "c73c6564c896b234071973656a884c63b132b69b71f5c91b861cb1bfa62de828"
 
   url "https://github.com/JonathanAriass/Ganesha/releases/download/v#{version}/Ganesha-#{version}-arm64.zip",
       verified: "github.com/JonathanAriass/Ganesha/"
