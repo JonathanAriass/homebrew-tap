@@ -18,7 +18,6 @@ cask "ganesha" do
   depends_on arch: :arm64
 
   app "Ganesha.app"
-
   # Put a `ganesha` command on the user's PATH (Homebrew symlinks this into
   # <brew-prefix>/bin). The launcher ships inside the bundle and opens the app, so
   # `ganesha` launches/focuses Ganesha from a terminal.
