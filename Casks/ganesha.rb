@@ -6,8 +6,8 @@ cask "ganesha" do
   #
   # version + sha256 are refreshed automatically by .github/workflows/update-cask.yml,
   # which reads the latest release of JonathanAriass/Ganesha.
-  version "1.0.4"
-  sha256 "0587b15244c17df8260ce2a3edd75fcc98b99725a24c915dc51aaab4f008e7b5"
+  version "1.0.5"
+  sha256 "e91db7b9d14996eea338a172680341fbd749478dd91692301f48a7372cec6462"
 
   url "https://github.com/JonathanAriass/Ganesha/releases/download/v#{version}/Ganesha-#{version}-arm64.zip",
       verified: "github.com/JonathanAriass/Ganesha/"
@@ -19,12 +19,20 @@ cask "ganesha" do
 
   app "Ganesha.app"
 
+  # Put a `ganesha` command on the user's PATH (Homebrew symlinks this into
+  # <brew-prefix>/bin). The launcher ships inside the bundle and opens the app, so
+  # `ganesha` launches/focuses Ganesha from a terminal.
+  binary "#{appdir}/Ganesha.app/Contents/Resources/ganesha"
+
   # Ganesha isn't signed/notarized yet, so a quarantined copy is reported as
   # "damaged" on Apple Silicon. Homebrew 6.0 removed --no-quarantine, so strip the
   # flag here on install. If this is blocked, the caveat below has the manual command.
+  # The chmod keeps the launcher executable so the `ganesha` link always runs.
   postflight do
     system_command "/usr/bin/xattr",
                    args: ["-dr", "com.apple.quarantine", "#{appdir}/Ganesha.app"]
+    system_command "/bin/chmod",
+                   args: ["+x", "#{appdir}/Ganesha.app/Contents/Resources/ganesha"]
   end
 
   caveats <<~EOS
